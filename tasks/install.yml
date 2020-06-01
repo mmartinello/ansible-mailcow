@@ -1,0 +1,24 @@
+---
+- name: Ensure that git is installed
+  package:
+    name: git
+    state: present
+
+- name: Clone the Mailcow GIT repository
+  git:
+    repo: "{{ mailcow_git_repository_url }}"
+    dest: "{{ mailcow_install_dir }}"
+    umask: '022'
+    update: true
+    version: "{{ mailcow_git_version }}"
+
+- name: Generates mailcow configuration file
+  template:
+    src: mailcow.conf.j2
+    dest: "{{ mailcow_install_dir }}/mailcow.conf"
+
+- name: Start mailcow
+  docker_compose:
+    project_src: "{{ mailcow_install_dir }}"
+    state: present
+    pull: true

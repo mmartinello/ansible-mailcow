@@ -1,0 +1,64 @@
+---
+# Project installation directory
+mailcow_install_dir: /opt/mailcow-dockerized
+mailcow_git_repository_url: https://github.com/mailcow/mailcow-dockerized
+mailcow_git_version: HEAD
+
+# Hostname
+mailcow_hostname: " {{ inventory_hostname }}"
+
+# MySQL database configuration
+mailcow_dbname: mailcow
+mailcow_dbuser: mailcow
+mailcow_dbpass: "{{ ansible_machine_id ~ '_mailcow_dbpass' | hash('sha1') | truncate(24, True, '') }}"
+mailcow_dbroot: "{{ ansible_machine_id ~ '_mailcow_dbroot' | hash('sha1') | truncate(24, True, '') }}"
+
+# Port bindings
+mailcow_http_port: 80
+mailcow_http_bind: 0.0.0.0
+mailcow_https_port: 443
+mailcow_https_bind: 0.0.0.0
+mailcow_smtp_port: 25
+mailcow_smtps_port: 465
+mailcow_submission_port: 587
+mailcow_imap_port: 143
+mailcow_imaps_port: 993
+mailcow_pop_port: 110
+mailcow_pops_port: 995
+mailcow_sieve_port: 4190
+mailcow_doveadm_port: 127.0.0.1:19991
+mailcow_sql_port: 127.0.0.1:13306
+mailcow_solr_port: 127.0.0.1:18983
+mailcow_redis_port: 127.0.0.1:7654
+
+# Timezone
+mailcow_tz: UTC
+
+# Other configurations (mailcow.conf file)
+mailcow_compose_project_name: mailcowdockerized
+mailcow_acl_anyone: disallow
+mailcow_maildir_gc_time: 1440
+mailcow_additional_san: []
+mailcow_skip_letsencrypt: false
+mailcow_enable_ssl_sni: false
+mailcow_skip_ip_check: false
+mailcow_skip_http_verification: false
+mailcow_skip_clamd: false
+mailcow_skip_sogo: false
+mailcow_skip_solr: false
+mailcow_solr_heap: 1024
+mailcow_use_watchdog: false
+mailcow_allow_admin_email_login: false
+mailcow_watchdog_notify_email: []
+mailcow_watchdog_notify_ban: false
+mailcow_watchdog_external_checks: false
+mailcow_log_lines: 9999
+mailcow_ipv4_network: 172.22.1
+mailcow_ipv6_network: fd4d:6169:6c63:6f77::/64
+mailcow_snat_to_source:
+mailcow_snat6_to_source:
+mailcow_api_key:
+mailcow_api_key_read_only:
+mailcow_api_allow_from:
+mailcow_maildir_sub: maildir
+mailcow_sogo_expire_session: 480

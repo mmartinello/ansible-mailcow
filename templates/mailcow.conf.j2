@@ -1,0 +1,267 @@
+# ------------------------------
+# mailcow web ui configuration
+# ------------------------------
+# example.org is _not_ a valid hostname, use a fqdn here.
+# Default admin user is "admin"
+# Default password is "moohoo"
+
+MAILCOW_HOSTNAME={{ mailcow_hostname }}
+
+# ------------------------------
+# SQL database configuration
+# ------------------------------
+
+DBNAME={{ mailcow_dbname }}
+DBUSER={{ mailcow_dbuser }}
+
+# Please use long, random alphanumeric strings (A-Za-z0-9)
+
+DBPASS={{ mailcow_dbpass }}
+DBROOT={{ mailcow_dbroot }}
+
+# ------------------------------
+# HTTP/S Bindings
+# ------------------------------
+
+# You should use HTTPS, but in case of SSL offloaded reverse proxies:
+# Might be important: This will also change the binding within the container.
+# If you use a proxy within Docker, point it to the ports you set below.
+# IMPORTANT: Do not use port 8081, 9081 or 65510!
+
+HTTP_PORT={{ mailcow_http_port }}
+HTTP_BIND={{ mailcow_http_bind }}
+
+HTTPS_PORT={{ mailcow_https_port }}
+HTTPS_BIND={{ mailcow_https_bind }}
+
+# ------------------------------
+# Other bindings
+# ------------------------------
+# You should leave that alone
+# Format: 11.22.33.44:25 or 0.0.0.0:465 etc.
+# Do _not_ use IP:PORT in HTTP(S)_BIND or HTTP(S)_PORT
+
+SMTP_PORT={{ mailcow_smtp_port }}
+SMTPS_PORT={{ mailcow_smtps_port }}
+SUBMISSION_PORT={{ mailcow_submission_port }}
+IMAP_PORT={{ mailcow_imap_port }}
+IMAPS_PORT={{ mailcow_imaps_port }}
+POP_PORT={{ mailcow_pop_port }}
+POPS_PORT={{ mailcow_pops_port }}
+SIEVE_PORT={{ mailcow_sieve_port }}
+DOVEADM_PORT={{ mailcow_doveadm_port }}
+SQL_PORT={{ mailcow_sql_port }}
+SOLR_PORT={{ mailcow_solr_port }}
+REDIS_PORT={{ mailcow_redis_port }}
+
+# Your timezone
+
+TZ={{ mailcow_tz }}
+
+# Fixed project name
+
+COMPOSE_PROJECT_NAME={{ mailcow_compose_project_name }}
+
+# Set this to "allow" to enable the anyone pseudo user. Disabled by default.
+# When enabled, ACL can be created, that apply to "All authenticated users"
+# This should probably only be activated on mail hosts, that are used exclusivly by one organisation.
+# Otherwise a user might share data with too many other users.
+ACL_ANYONE={{ mailcow_acl_anyone }}
+
+# Garbage collector cleanup
+# Deleted domains and mailboxes are moved to /var/vmail/_garbage/timestamp_sanitizedstring
+# How long should objects remain in the garbage until they are being deleted? (value in minutes)
+# Check interval is hourly
+
+MAILDIR_GC_TIME={{ mailcow_maildir_gc_time }}
+
+# Additional SAN for the certificate
+#
+# You can use wildcard records to create specific names for every domain you add to mailcow.
+# Example: Add domains "example.com" and "example.net" to mailcow, change ADDITIONAL_SAN to a value like:
+#ADDITIONAL_SAN=imap.*,smtp.*
+# This will expand the certificate to "imap.example.com", "smtp.example.com", "imap.example.net", "imap.example.net"
+# plus every domain you add in the future.
+#
+# You can also just add static names...
+#ADDITIONAL_SAN=srv1.example.net
+# ...or combine wildcard and static names:
+#ADDITIONAL_SAN=imap.*,srv1.example.com
+#
+
+ADDITIONAL_SAN={{ mailcow_additional_san }}
+
+# Skip running ACME (acme-mailcow, Let's Encrypt certs) - y/n
+
+{% if mailcow_skip_letsencrypt == "y" or mailcow_skip_letsencrypt is true %}
+SKIP_LETS_ENCRYPT=y
+{% else %}
+SKIP_LETS_ENCRYPT=n
+{% endif %}
+
+# Create seperate certificates for all domains - y/n
+# this will allow adding more than 100 domains, but some email clients will not be able to connect with alternative hostnames
+# see https://wiki.dovecot.org/SSL/SNIClientSupport
+{% if mailcow_enable_ssl_sni == "y" or mailcow_enable_ssl_sni is true %}
+ENABLE_SSL_SNI=y
+{% else %}
+ENABLE_SSL_SNI=n
+{% endif %}
+
+# Skip IPv4 check in ACME container - y/n
+
+{% if mailcow_skip_ip_check == "y" or mailcow_skip_ip_check is true %}
+SKIP_IP_CHECK=y
+{% else %}
+SKIP_IP_CHECK=n
+{% endif %}
+
+# Skip HTTP verification in ACME container - y/n
+
+{% if mailcow_skip_http_verification == "y" or mailcow_skip_http_verification is true %}
+SKIP_HTTP_VERIFICATION=y
+{% else %}
+SKIP_HTTP_VERIFICATION=n
+{% endif %}
+
+# Skip ClamAV (clamd-mailcow) anti-virus (Rspamd will auto-detect a missing ClamAV container) - y/n
+
+{% if mailcow_skip_clamd == "y" or mailcow_skip_clamd is true %}
+SKIP_CLAMD=y
+{% else %}
+SKIP_CLAMD=n
+{% endif %}
+
+# Skip SOGo: Will disable SOGo integration and therefore webmail, DAV protocols and ActiveSync support (experimental, unsupported, not fully implemented) - y/n
+{% if mailcow_skip_sogo == "y" or mailcow_skip_sogo is true %}
+SKIP_SOGO=y
+{% else %}
+SKIP_SOGO=n
+{% endif %}
+
+# Skip Solr on low-memory systems or if you do not want to store a readable index of your mails in solr-vol-1.
+
+{% if mailcow_skip_solr == "y" or mailcow_skip_solr is true %}
+SKIP_SOLR=y
+{% else %}
+SKIP_SOLR=n
+{% endif %}
+
+# Solr heap size in MB, there is no recommendation, please see Solr docs.
+# Solr is a prone to run OOM and should be monitored. Unmonitored Solr setups are not recommended.
+
+SOLR_HEAP={{ mailcow_solr_heap }}
+
+# Enable watchdog (watchdog-mailcow) to restart unhealthy containers (experimental)
+
+{% if mailcow_use_watchdog == "y" or mailcow_use_watchdog is true %}
+USE_WATCHDOG=y
+{% else %}
+USE_WATCHDOG=n
+{% endif %}
+
+# Allow admins to log into SOGo as email user (without any password)
+
+{% if mailcow_allow_admin_email_login == "y" or mailcow_allow_admin_email_login is true %}
+ALLOW_ADMIN_EMAIL_LOGIN=y
+{% else %}
+ALLOW_ADMIN_EMAIL_LOGIN=n
+{% endif %}
+
+# Send notifications by mail (sent from watchdog@MAILCOW_HOSTNAME)
+# CAUTION:
+# 1. You should use external recipients
+# 2. Mails are sent unsigned (no DKIM)
+# 3. If you use DMARC, create a separate DMARC policy ("v=DMARC1; p=none;" in _dmarc.MAILCOW_HOSTNAME)
+# Multiple rcpts allowed, NO quotation marks, NO spaces
+
+{% if mailcow_watchdog_notify_email != None %}
+{% if mailcow_watchdog_notify_email is iterable %}
+WATCHDOG_NOTIFY_EMAIL=[{% for email in mailcow_watchdog_notify_email %}'{{ email }}'{{ ", " if not loop.last else "" }}{% endfor %}]
+{% else %}
+WATCHDOG_NOTIFY_EMAIL={{ mailcow_watchdog_notify_email }}
+{% endif %}
+{% else %}
+#WATCHDOG_NOTIFY_EMAIL=
+{% endif %}
+
+# Notify about banned IP (includes whois lookup)
+
+{% if mailcow_watchdog_notify_ban == "y" or mailcow_watchdog_notify_ban is true %}
+WATCHDOG_NOTIFY_BAN=y
+{% else %}
+WATCHDOG_NOTIFY_BAN=n
+{% endif %}
+
+# Checks if mailcow is an open relay. Requires a SAL. More checks will follow.
+# https://www.servercow.de/mailcow?lang=en
+# https://www.servercow.de/mailcow?lang=de
+# No data is collected. Opt-in and anonymous.
+# Will only work with unmodified mailcow setups.
+
+{% if mailcow_watchdog_external_checks == "y" or mailcow_watchdog_external_checks is true %}
+WATCHDOG_EXTERNAL_CHECKS=y
+{% else %}
+WATCHDOG_EXTERNAL_CHECKS=n
+{% endif %}
+
+# Max log lines per service to keep in Redis logs
+
+LOG_LINES={{ mailcow_log_lines }}
+
+# Internal IPv4 /24 subnet, format n.n.n (expands to n.n.n.0/24)
+
+IPV4_NETWORK={{ mailcow_ipv4_network }}
+
+# Internal IPv6 subnet in fc00::/7
+
+IPV6_NETWORK={{ mailcow_ipv6_network }}
+
+# Use this IPv4 for outgoing connections (SNAT)
+
+{% if mailcow_snat_to_source != None %}
+SNAT_TO_SOURCE={{ mailcow_snat_to_source }}
+{% else %}
+#SNAT_TO_SOURCE=
+{% endif %}
+
+# Use this IPv6 for outgoing connections (SNAT)
+{% if mailcow_snat6_to_source != None %}
+SNAT6_TO_SOURCE={{ mailcow_snat6_to_source }}
+{% else %}
+#SNAT6_TO_SOURCE=
+{% endif %}
+
+# Create or override an API key for the web UI
+# You _must_ define API_ALLOW_FROM, which is a comma separated list of IPs
+# An API key defined as API_KEY has read-write access
+# An API key defined as API_KEY_READ_ONLY has read-only access
+# Allowed chars for API_KEY and API_KEY_READ_ONLY: a-z, A-Z, 0-9, -
+# You can define API_KEY and/or API_KEY_READ_ONLY
+# Using CIDR is not yet implemented within mailcow.conf, use the UI to allow networks.
+
+{% if mailcow_api_key != None %}
+API_KEY={{ mailcow_api_key }}
+{% else %}
+#API_KEY=
+{% endif %}
+{% if mailcow_api_key_read_only != None %}
+API_KEY_READ_ONLY={{ mailcow_api_key_read_only }}
+{% else %}
+#API_KEY_READ_ONLY=
+{% endif %}
+{% if mailcow_api_allow_from != None %}
+{% if mailcow_api_allow_from is iterable %}
+API_ALLOW_FROM=[{% for ip in mailcow_api_allow_from %}'{{ ip }}'{{ ", " if not loop.last else "" }}{% endfor %}]
+{% else %}
+API_ALLOW_FROM={{ mailcow_api_allow_from }}
+{% endif %}
+{% else %}
+#API_ALLOW_FROM=
+{% endif %}
+
+# mail_home is ~/Maildir
+MAILDIR_SUB={{ mailcow_maildir_sub }}
+
+# SOGo session timeout in minutes
+SOGO_EXPIRE_SESSION={{ mailcow_sogo_expire_session }}
