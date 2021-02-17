@@ -34,6 +34,10 @@ mailcow_redis_port: 127.0.0.1:7654
 # Timezone
 mailcow_tz: UTC
 
+# Let's Encrypt SSL configuration
+mailcow_skip_ip_check: false
+mailcow_only_mailcow_hostname: false
+
 # Other configurations (mailcow.conf file)
 mailcow_compose_project_name: mailcowdockerized
 mailcow_acl_anyone: disallow
@@ -41,7 +45,6 @@ mailcow_maildir_gc_time: 1440
 mailcow_additional_san: []
 mailcow_skip_letsencrypt: false
 mailcow_enable_ssl_sni: false
-mailcow_skip_ip_check: false
 mailcow_skip_http_verification: false
 mailcow_skip_clamd: false
 mailcow_skip_sogo: false

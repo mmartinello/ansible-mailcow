@@ -116,6 +116,14 @@ SKIP_IP_CHECK=y
 SKIP_IP_CHECK=n
 {% endif %}
 
+# Create Let's Encrypt SSL certificate only for Mailcow hostname - y/n
+
+{% if mailcow_only_mailcow_hostname == "y" or mailcow_only_mailcow_hostname is true %}
+ONLY_MAILCOW_HOSTNAME=y
+{% else %}
+ONLY_MAILCOW_HOSTNAME=n
+{% endif %}
+
 # Skip HTTP verification in ACME container - y/n
 
 {% if mailcow_skip_http_verification == "y" or mailcow_skip_http_verification is true %}
